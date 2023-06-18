@@ -627,17 +627,6 @@ df.to_csv('df_all_jobs_labeled.csv')
 ```
 
 
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    /var/folders/9z/scwdbhm50c1848gsllv1nqk80000gn/T/ipykernel_22875/797945982.py in <module>
-    ----> 1 df.to_csv('df_all_jobs_marked.csv')
-    
-
-    NameError: name 'df' is not defined
-
-
 ## Analysis 
 ### 1. What Data jobs are in demand in Canada in 2023?
 
