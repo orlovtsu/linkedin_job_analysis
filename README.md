@@ -6,6 +6,8 @@ This is the project containing 3 parts:
 3. Analysis of job market, including geo analysis, job market structure, skills and competences analysis and analysis of popular programming languages and tools.
 
 The main article is provided here: https://orlovtsu.github.io/job_postings_analysis.html.
+# Disclaimer
+The author of this article is not responsible for the further use of materials and code given in the article. All materials are provided for informational and educational purposes. The responsibility for using the results of this article lies entirely with the reader.
 
 # Job List from LinkedIn
 This is the first step of job market analysis provided in the article: https://orlovtsu.github.io/job_postings_analysis.html.
