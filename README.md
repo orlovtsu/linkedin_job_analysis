@@ -1,4 +1,428 @@
-# LinkedIn Job Analysis 
+# Data Science jobs in Canada in 2023. Analysis of Job Postings from LinkedIn
+
+This is the project containing 3 parts:
+1. Scraping linkedin job list using LinkedIn job search engine which provide Job Title, Company Name, Location and URL of each job.
+2. Scraping job posting including job description, skill set, number of applied applicants, type of workplace (Remote, On-site, Hybrid), job level, job type (Contract, Full-time, Part-time, Internship etc.), industry of the hiring company, how long it was posted.
+3. Analysis of job market, including geo analysis, job market structure, skills and competences analysis and analysis of popular programming languages and tools.
+
+The main article is provided here: https://orlovtsu.github.io/job_postings_analysis.html.
+
+# Job List from LinkedIn
+This is the first step of job market analysis provided in the article: https://orlovtsu.github.io/job_postings_analysis.html.
+
+If you use this code for scraping data from LinkedIn be aware about the LinkedIn Term of Use and be sure that you do not violate it.
+
+## Import Libraries
+1. Selenium is a tool for automating web browsers, and these modules allow you to interact with web elements, locate elements by various criteria, and simulate keyboard actions.
+2. BeautifulSoup module, which is used for parsing HTML and XML documents, provides convenient methods for extracting data from web pages.
+3. Pandas library is a powerful data manipulation and analysis tool. It provides data structures and functions for efficiently handling structured data.
+4. Time module provides functions for working with time-related operations, such as delays and timestamps.
+
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+import pandas as pd
+import time
+from random import randint
+```
+
+## Initialization 
+This next chunk assigns the path to the ChromeDriver executable to the variable chromedriver_path. The ChromeDriver is a separate executable that is required when using Selenium with Google Chrome. It acts as a bridge between the Selenium WebDriver and the Chrome browser, allowing automated interactions with the browser.
+
+In this case, the chromedriver_path is set to './chromedriver', indicating that the ChromeDriver executable is located in the current directory (denoted by '.') and its filename is chromedriver. The specific path may vary depending on the actual location of the ChromeDriver executable on your system.
+
+Make sure to provide the correct path to the ChromeDriver executable file in order for Selenium to work properly with Google Chrome.
+
+For more details: https://chromedriver.chromium.org/downloads
+
+
+```python
+chromedriver_path = './chromedriver'
+```
+
+The next chunk create an instance of ChromeOptions class from the Selenium webdriver module. ChromeOptions allows you to customize the behavior of the Chrome browser when it is launched. In this case, the --start-maximized argument is added to the options, which instructs Chrome to start in maximized window mode.
+
+This code also creates an instance of the webdriver.Chrome class, passing the options object and chromedriver_path as arguments. It initializes the Chrome webdriver, using the ChromeDriver executable located at chromedriver_path and applying the specified options for Chrome's behavior. Code sets an implicit wait time of 10 seconds for the driver object. The implicit wait instructs Selenium to wait for a certain amount of time when trying to locate elements on the web page. It allows the driver to wait for a specified duration before throwing a NoSuchElementException if the element is not immediately available. In this case, the implicit wait is set to 10 seconds.
+
+
+```python
+
+options = webdriver.ChromeOptions()
+options.add_argument("--start-maximized")
+
+driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
+
+driver.implicitly_wait(10)
+```
+
+Following chunk opens the page where you should authorize and changes the scale of viewing page.
+
+
+```python
+# Open the web page with the login and password fields
+# Enter your username and password to authenticate as a LinkedIn user
+driver.get('https://www.linkedin.com/login')
+
+
+# To speed up the downloading process for scraping the page content, it is recommended to reduce the page scale to 25%.
+# This will result in faster download of the majority of the content you require.
+driver.execute_script("document.body.style.zoom = '25%'")
+```
+
+## Job List Scraping script:
+
+
+```python
+# Set the search query and location
+query = '"BI"'
+location = 'Canada'
+
+# Create an empty list to store the job data
+data = []
+
+# Loop through multiple pages
+for page_num in range(1, 40):
+    # Construct the URL for each page based on the query, location, and page number
+    url = f'https://www.linkedin.com/jobs/search/?keywords={query}&location={location}&start={25 * (page_num - 1)}'
+
+    # Decrease the page scale to 25% for faster content downloading    
+    driver.execute_script("document.body.style.zoom = '25%'")
+
+    # Open the URL in the web driver
+    driver.get(url)
+    
+    # Pause for a random time between 10 and 20 seconds
+    time.sleep(randint(10,20))  
+    
+    # Parse the page source using BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    
+    # Find all job postings on the page
+    job_postings = soup.find_all('li', {'class': 'jobs-search-results__list-item'})
+    
+    # Print job titles for each job posting
+    for k, job in enumerate(job_postings):
+        try:                
+            print(k, ':', job.find('a', class_='job-card-list__title').get_text().strip())
+        except:
+            print(None)
+            
+    print('-----')
+    
+    # Extract relevant information from each job posting and store it in a list of dictionaries
+    for i in range(len(job_postings)):
+        j = 0
+        while ((job_postings[i].find('a', class_='job-card-list__title')== None) & (j < 10)):
+            print(i,': Attempt again -', j)
+            job_postings = soup.find_all('li', {'class': 'jobs-search-results__list-item'})
+            for k, job in enumerate(job_postings):
+                try:
+                    print(k, ':', job.find('a', class_='job-card-list__title').get_text().strip())
+                except:
+                    print(None)            
+            print('-----')
+            j += 1
+            if j == 4:
+                i += 1
+                j = 0
+        
+        job_posting = job_postings[i]
+
+        # Extract job title, company name, location, and URL from the job posting
+        try:
+            job_title = job_posting.find('a', class_='job-card-list__title').get_text().strip()
+        except AttributeError:
+            job_title = None
+        
+        # Extract company name. Depending of personal account settings, name of html tags and html structure may vary. 
+        # If this line does not work, uncomment any of other lines to try again
+        try:
+            #company_name = job_posting.find('span', class_='job-card-container__primary-description ').get_text().strip()
+            company_name = job_posting.find('div', class_='job-card-container__company-name').text.strip()
+            #company_name = job_posting.find('span', class_='job-card-container__primary-description').get_text(strip=True)
+        except AttributeError:
+            company_name = None
+        print(i, company_name)
+        try:
+            job_location = job_posting.find('li', class_='job-card-container__metadata-item').get_text().strip()
+        except AttributeError:
+            job_location = None
+
+        try:
+            URL = job_posting.find('a', class_='job-card-container__link', href=True).get('href')
+        except AttributeError:
+            URL = None
+
+        try:
+            job_next = job_postings[i+1].find('a', class_='job-card-list__title').get_text().strip()
+        except:
+            job_next = None
+        
+        if not job_next:
+            URL1 = '/'.join(URL.split('/')[0:4])
+            button = driver.find_element(by=By.XPATH, value = f"//a[contains(@href, '{URL1}')]")
+            button.click()
+      
+            time.sleep(2)
+            current_url = driver.current_url   
+            
+            driver.get(current_url)
+            
+            if ((i < len(job_postings)-1)):
+                time.sleep(randint(10,20))  # Wait for 20 seconds
+                soup = BeautifulSoup(driver.page_source, 'html.parser')        
+                j = 0
+                while ((job_postings[i+1].find('a', class_='job-card-list__title')== None) & (j < 10)):
+                    print(i,': Attempt again')
+                    job_postings = soup.find_all('li', {'class': 'jobs-search-results__list-item'})
+                    for k, job in enumerate(job_postings):
+                        try:
+                            print(k, ':', job.find('a', class_='job-card-list__title').get_text().strip())
+                        except:
+                            print(None)                
+                    print('-----')
+                    j += 1
+                    if j == 4:
+                        i += 1
+                        j = 0
+        # Append the extracted job information to the data list   
+        data.append({
+            'Job Title': job_title,
+            'Company Name': company_name,
+            'Location': job_location,
+            'URL': URL,
+         })
+        
+        # Pause for 5 seconds
+        time.sleep(5) 
+```
+
+Depending of an account and some personal settings, the strucure of HTML page may vary and this is why sometimes the previous chink may finish by any type of error. This is why, it should be tune sometimes and DataFrame should be saved to save data and not to repeat the scraping you already did.
+
+## Results saving
+Do not forget to save you results:
+
+
+```python
+# Create a DataFrame from the collected job data        
+df = pd.DataFrame(data)
+df.to_csv('job_list_all.csv')
+```
+
+# 2. Job Posting from LinkedIn
+
+This is the code provides the script for scraping job posting including job description, skill set, number of applied applicants, type of workplace (Remote, On-site, Hybrid), job level, job type (Contract, Full-time, Part-time, Internship etc.), industry of the hiring company, how long it was posted. 
+
+This is the second step of job market analysis provided in the article: https://orlovtsu.github.io/job_postings_analysis.html.
+
+If you use this code for scraping data from LinkedIn be aware about the LinkedIn Term of Use and be sure that you do not violate it.
+
+## Import Libraries
+1. Selenium is a tool for automating web browsers, and these modules allow you to interact with web elements, locate elements by various criteria, and simulate keyboard actions.
+2. BeautifulSoup module, which is used for parsing HTML and XML documents, provides convenient methods for extracting data from web pages.
+3. Pandas library is a powerful data manipulation and analysis tool. It provides data structures and functions for efficiently handling structured data.
+4. Time module provides functions for working with time-related operations, such as delays and timestamps.
+
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+import pandas as pd
+import time
+from random import randint
+```
+
+## Initialization 
+This next chunk assigns the path to the ChromeDriver executable to the variable chromedriver_path. The ChromeDriver is a separate executable that is required when using Selenium with Google Chrome. It acts as a bridge between the Selenium WebDriver and the Chrome browser, allowing automated interactions with the browser.
+
+In this case, the chromedriver_path is set to './chromedriver', indicating that the ChromeDriver executable is located in the current directory (denoted by '.') and its filename is chromedriver. The specific path may vary depending on the actual location of the ChromeDriver executable on your system.
+
+Make sure to provide the correct path to the ChromeDriver executable file in order for Selenium to work properly with Google Chrome.
+
+For more details: https://chromedriver.chromium.org/downloads
+
+
+```python
+chromedriver_path = './chromedriver.exe'
+```
+
+The next chunk create an instance of ChromeOptions class from the Selenium webdriver module. ChromeOptions allows you to customize the behavior of the Chrome browser when it is launched. In this case, the --start-maximized argument is added to the options, which instructs Chrome to start in maximized window mode.
+
+This code also creates an instance of the webdriver.Chrome class, passing the options object and chromedriver_path as arguments. It initializes the Chrome webdriver, using the ChromeDriver executable located at chromedriver_path and applying the specified options for Chrome's behavior. Code sets an implicit wait time of 10 seconds for the driver object. The implicit wait instructs Selenium to wait for a certain amount of time when trying to locate elements on the web page. It allows the driver to wait for a specified duration before throwing a NoSuchElementException if the element is not immediately available. In this case, the implicit wait is set to 10 seconds.
+
+
+```python
+options = webdriver.ChromeOptions()
+options.add_argument("--start-maximized")
+
+driver = webdriver.Chrome(options=options)
+
+driver.implicitly_wait(10)
+```
+
+Following chunk opens the page where you should authorize and changes the scale of viewing page.
+
+
+```python
+# Open the web page with the login and password fields
+# Enter your username and password to authenticate as a LinkedIn user
+driver.get('https://www.linkedin.com/login')
+
+
+# To speed up the downloading process for scraping the page content, it is recommended to reduce the page scale to 25%.
+# This will result in faster download of the majority of the content you require.
+driver.execute_script("document.body.style.zoom = '25%'")
+```
+
+## Job Posting Scraping script:
+
+
+```python
+# Read the job list from a CSV file
+job_list = pd.read_csv('job_list_all.csv')
+data = []
+
+# Iterate through each job in the job list starting from index 526
+for index, job in job_list[526:].iterrows():
+    URL = 'https://www.linkedin.com' + '/'.join(job['URL'].split('/')[0:4]) # Create the URL for each job
+    driver.get(URL)  # Open the URL in the web driver
+    time.sleep(randint(4,10))  # Pause for a random time between 4 and 10 seconds
+    
+    soup = BeautifulSoup(driver.page_source, 'html.parser')# Parse the page source using BeautifulSoup
+    
+    job_location = job['Location']  # Extract job location from the job list
+    job_title = job['Job Title']  # Extract job title from the job list
+    company_name = job['Company Name']  # Extract company name from the job list
+
+    try:
+        no_longer_message =  soup.find('span', class_ = 'artdeco-inline-feedback__message').get_text(strip = True)
+        print(index, no_longer_message)
+        no_longer = 'No longer' in no_longer_message  # Check if the job posting is no longer available
+    except:
+        no_longer = False
+        
+    if not no_longer:
+        job_insights = soup.find_all('li', {'class': 'jobs-unified-top-card__job-insight'})# Find job insights
+ 
+        # Extract job type and job level from job insights
+        try:
+            job_type = job_insights[0].find('span').get_text(strip = True).split('·')[0]
+        except:
+            job_type = 'Not defined'
+        try:
+            job_level = job_insights[0].find('span').get_text(strip = True).split('·')[1]
+        except:
+            job_level = 'Not defined'
+
+        # Extract company size and job industry from job insights
+        try:
+            company_size = job_insights[1].find('span').get_text(strip = True).split('·')[0]
+        except:
+            company_size = 'Not defined'
+        try:
+            job_industry = job_insights[1].find('span').get_text(strip = True).split('·')[1]
+        except:
+            job_industry = 'Not defined'
+
+        # Extract number of job applicants
+        try:
+            for insight in job_insights[2:]:  
+                text = insight.find('span').get_text(strip = True)
+                if 'applicants' in text:
+                    job_applicants = text.split(' ')[5]
+                    break
+        except:
+            try:
+                job_applicants = soup.find('span', {'class': 'jobs-unified-top-card__applicant-count'}).get_text(strip = True).split(' ')[0]
+            except:
+                try:
+                    span_element = soup.find('span', class_='jobs-unified-top-card__subtitle-secondary-grouping')
+                    job_applicants = span_element.find('span', class_='jobs-unified-top-card__bullet').get_text(strip=True)
+                except:
+                    job_applicants = 'Not defined'
+        
+        try:
+            posted = soup.find('span', {'class': 'jobs-unified-top-card__posted-date'}).get_text(strip = True)
+        except:
+            posted = 'Not defined'
+        try:
+            workplacetype = soup.find('span', {'class': 'jobs-unified-top-card__workplace-type'}).get_text(strip = True)
+        except:
+            workplacetype = 'Not defined'
+            
+        # Click the "Skills" button to view job skills
+        try:
+            button_skills = driver.find_element(by=By.CLASS_NAME, value = 'jobs-unified-top-card__job-insight-text-button')
+            button_skills.click()
+            time.sleep(randint(4,10))
+            soup_skills = BeautifulSoup(driver.page_source, 'html.parser')   
+            skills = soup_skills.find_all('li', {'class': 'job-details-skill-match-status-list__unmatched-skill'})
+            skill_set = ''
+            for skill in skills:
+                div_element = skill.find('div', class_='display-flex')  # Example: Locating the div based on the 'display-flex' class
+                skill_text = div_element.get_text(strip=True)
+                skill_set = skill_set + skill_text + '; '
+
+            button_exit = driver.find_element(By.XPATH, "//span[text()='Done']")
+            button_exit.click()
+        except:
+            skill_set = ''
+        
+        # Click the "More" button to view full job description
+        try:
+            button_more = driver.find_element(by=By.CLASS_NAME, value = 'jobs-description__footer-button')
+            button_more.click()
+            time.sleep(randint(4,10))
+            soup_more = BeautifulSoup(driver.page_source, 'html.parser')  
+        except:
+            button_more = None
+                
+        # Extract job description 
+        try:
+            description = soup.find('div', {'class': 'jobs-box__html-content'}).get_text(strip = True)
+        except:
+            description = 'Not defined'
+        
+        # Output for checking the progress
+        print(index, job_title, company_name)
+        
+        # Append the extracted job information to the data list
+        data.append({
+            'Job Title': job_title, #+
+            'Company Name': company_name, 
+            'Company Size': company_size, 
+            'Location': job_location, 
+            'URL': URL, 
+            'Workplace_Type': workplacetype, 
+            'Posted': posted,
+            'Applicants': job_applicants,
+            'Industry': job_industry, 
+            'Job level': job_level,
+            'Job type': job_type, 
+            'Skillset': skill_set,
+            'Description': description
+        })
+
+```
+
+## Results saving
+Do not forget to save you results:
+
+
+```python
+# Create a DataFrame from the collected job data
+df = pd.DataFrame(data)
+df.to_csv('job_postings.csv')
+```
+
+
+
+# 3. LinkedIn Job Analysis 
 
 This is the third step of job market analysis provided in the article: https://orlovtsu.github.io/job_postings_analysis.html.
 
@@ -341,6 +765,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot1.html")
 ```
+[plot1](plot1.png)
 
 The first key insight is the Data Engineer, Data Scientist and Data Analyst jobs take more than 70% of all Data Science job market. These jobs are mostly in demand now and the most demanded job is Data Engineer with 31% of the job market. So, if you are a Data Engineer or planning to become a Data Engineer, this is the hottest job now in our field. Data Analyst and Data Scientist are still on top of Data Science jobs. And the insightful thing that Software Engineers are hired by companies mostly for developing AI tools together with Machine Learning Engineers. Product Managers is also a popular job based on job posting data, such as Data Entry position. Actually, Data Entry job is hardly to classify by Data Science role, but since this work is data related and quite popular, I decided to include it in this study. And BI has not a huge proportion in our dataset but maybe the reason is in the title of jobs and mostly BI tasks are included in the Data Analyst positions.
 
@@ -474,7 +899,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot2.html")
 ```
-
+[plot2](plot2.png)
 More than half (52,6%) of the positions are open to middle and senior level specialists. However, in 2023, Canada also has a significant number of positions for entry-level data specialists (22.7%) and associates (3.82%), as well as internships (2.84), most of which are co-op formats that are unique to Canada and are excellent opportunities for starting a career for young specialists. Data Science Directors are most demanded from leading positions with 4.15%.
 
 And sometimes it's interesting to look in what industries all these specialists work.
@@ -652,7 +1077,7 @@ fig.show()
 fig.write_html("plot3.html")
 
 ```
-
+[plot3](plot3.png)
 
 And the answer is that 4 main industries takes more than 50% of Data Science jobs market: Software Development (17.1%), IT Service and Consulting (17.1%), Finance Service (11.5%) and Staffing and Recruiting (7.93%). The last industry is highly probable represented by intermediary companies that hire data scientists for their clients. The one additional insight that HealthCare industry has almost 5.5% of Data Science job market which is very high and characterizes that in Canada, the field of HealthCare and medicine is at a high-tech level.
 
@@ -946,7 +1371,7 @@ fig.add_trace(
 fig.show()
 fig.write_html("plot4.html")
 ```
-
+[plot4](plot4.png)
 The answer to guiding question we can find in Geographical analysts and find that the most Data Science Jobs city in Canada is Toronto, the second one - Montreal, the third one is Vancouver and Calgary is placed in fourth place. So, as a Calgary resident I can say that Calgary is the first Data Science city in Alberta and one of the top Data Science cities in Canada.
 
 Analysing the structure of these jobs using the following bar chart we can find some more insights, such as the second popular location for Data Science jobs is Remote. 
@@ -970,7 +1395,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot5.html")
 ```
-
+[plot5](plot5.png)
 Hiring remote specialists in Canada is highly popular, especially for the U.S. companies. So, if you are looking for a remote job from home, Data Science is the field where you can find a lot of opportunities for this. As Calgarian Data Scientist I'm very interesting about Calgary and I found then unlike other locations Calgarian companies more likely hire Data Scientists but not other related specialists such as Data Engineers or Data Analysts. This fact gives us some insights about the structure of the Calgarian job market which is filled with a lot of young and fast growing startups.
 
 The structure of the job market would be incomplete without understanding the number of companies hiring Data Science specialists and without understanding how many job postings are posted in each part of the job market structure. 
@@ -1015,7 +1440,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot6.html")
 ```
-
+[plot6](plot6.png)
 So, analysing these two questions I found that most of the jobs came from middle-large and extra-large companies which may be as long as large Canadian companies as international companies hiring through Canada. And the other part is the local part of companies of different sizes and mostly hired locally in cities they are located.
 
 
@@ -1045,7 +1470,7 @@ fig.update_layout(barmode='stack', yaxis_title = 'Number of jobs', xaxis={'categ
 fig.show()
 fig.write_html("plot6_.html")
 ```
-
+[plot6_](plot6_.png)
 
 ```python
 df5 = df4[['Company Name', 'Company Size']]
@@ -1075,7 +1500,7 @@ fig.update_layout(barmode='stack', yaxis_title = 'Number of companies', xaxis={'
 fig.show()
 fig.write_html("plot6_1.html")
 ```
-
+[plot6_1](plot6_1.png)
 
 ## 3. Which skills set is important for each job? How to make your LinkedIn profile matching with job postings? What should you know from related fields?
 
@@ -1435,7 +1860,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot7.html")
 ```
-
+[plot7](plot7.png)
 For Data Analysts the demanded skill set starts from Data Analytics, Communications, Analytical Skills, Data Analysis, Analytics, Visualization and Problem Solving. The same as the previous, the entire skill set is placed on the chart below.
 
 
@@ -1448,7 +1873,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot8.html")
 ```
-
+[plot8](plot8.png)
 Machine Learning Engineers to be matching with the most MLE job postings should know Computer Science, Data Science, Artificial Intelligence, Machine Learning, Pattern Recognition, Natural Language Processing, Software Engineering, Programming, Python, Data Mining, Deep Learning etc.
 
 
@@ -1461,7 +1886,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot9.html")
 ```
-
+[plot9](plot9.png)
 
 The top 5 Data Engineer Skills: ETL (Extract, Transform and Load), Data Engineering, Databases, Communication and Data Modeling. Following skills are placed on the bar chart below.
 
@@ -1475,7 +1900,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot10.html")
 ```
-
+[plot10](plot10.png)
 Software Engineers looking for a career in Data Science field should know Software Engineering (obviously), Communication, Computer Science, Databases, Back-End Web Development, Programming, SQL and other skills below.
 
 
@@ -1488,7 +1913,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot11.html")
 ```
-
+[plot11](plot11.png)
 Business Intelligence specialists should be experienced in Communication, BI, Data Analytics, Databases, Analytical Skills, creating Dashboards, operating with Data Warehouses, ETL, Problem Solving and Data Modeling and other skills below.
 
 
@@ -1501,7 +1926,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot12.html")
 ```
-
+[plot12](plot12.png)
 Product Managers also should be able to Communicate efficiently, to be familiar with Data Analytics and Data Analysis, Problem Solving, Query Writing, Project Management (obviously), MS Power Query and some more skills below.
 
 
@@ -1514,7 +1939,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot13.html")
 ```
-
+[plot13](plot13.png)
 Data Entry specialists should be qualified in English, Online Search, Global Business, Data Science, Data Mining and other skill sets below.
 
 
@@ -1527,7 +1952,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot14.html")
 ```
-
+[plot14](plot14.png)
 As a careful reader could find, many skills are placed in different Data Science jobs and may sign that any Data specialist should be familiar with skills from related job. This insight leads us to construct the model of competencies of each job position. To construct the model I calculated the number of includings of each skill in each job. Then, the number of intersections with each other category of job gives us the value of each ray. But to be more accurate, each value on each ray is divided to the number of jobs in each class. This gives us the relative value of the intersections of each position with each other and allows you to build an approximate wheel of competencies for each profession.
 
 
@@ -1843,7 +2268,8 @@ fig = px.line_polar(df_line_polar[:32], r="value", theta="keys", color = 'Job Cl
 fig.show()
 fig.write_html("plot15.html")
 ```
-
+[plot15](plot15.png)
+[plot16](plot16.png)
 As we can find on the chart below Data Scientists should also have skills of Data Analyst, Data Engineer and Machine Learning Engineer. As a Data Scientist other specialists on the charts below should be familiar with skills from different jobs. To take more information please play with charts below and fill free to give the feedback about this model.
 
 # 4. What are the most popular programming languages and tools in Data Science based on Job Postings?
@@ -2025,7 +2451,7 @@ fig.show()
 #df_langs
 fig.write_html("plot17.html")
 ```
-
+[plot17](plot17.png)
 And the answers for these questions are placed on three following tree plots. The top 3 most popular languages for Data Science jobs are SQL, Python and R. So, these languages are the kinds that MUST HAVE in the Data Science field and should be learned by anyone who wants to be competitive in the job market in this field. Java, SAS, Scala, C++ and other languages are also important for Data Science roles.
 
 
@@ -2070,7 +2496,7 @@ fig = px.treemap(df_tools, path=['key'], values='value',
 fig.show()
 fig.write_html("plot18.html")
 ```
-
+[plot18](plot18.png)
 When it comes to tools, Microsoft Excel is the MUST HAVE tool for anyone who wants to work in the Data field, as also Power BI, Tableau, AWS, Azure and other important tools related with Data Engineering, Machine Learning and Version control process
 
 
@@ -2112,7 +2538,7 @@ fig = px.treemap(df_libs, path=['key'], values='value',
 fig.show()
 fig.write_html("plot19.html")
 ```
-
+[plot19](plot19.png)
 According to libraries from the tree chart below we can find that such Machine Learning libraries as TensorFlow, PyTorch, data manipulation library Pandas, NumPy, sk-learn and others are highly important for our field. So, if you are not familiar with these libraries and are going to enter the market, start learning today, because hiring companies expect it from us in 2023.
 
 ## Conclusion
