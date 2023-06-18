@@ -2553,7 +2553,7 @@ And I also want to thank my colleagues, professors, assistants and students of t
 
 Hope you enjoyed this reading.
 
-#If you have any questions, comments or just want to connect with me, please feel free to contact me via LinkedIn.
+If you have any questions, comments or just want to connect with me, please feel free to contact me via [LinkedIn](linkedin.com/in/orlovtsu).
 
 
 ```python
