@@ -2547,7 +2547,7 @@ According to libraries from the tree chart below we can find that such Machine L
 
 In Conclusion, I want to say thanks to all developers of libraries which I used for this work. I also thank to LinkedIn for their great job board and hope they will not ban me for this project, because the main goal I pursue is to share the knowledge which I got from the data to help people navigate in the field and if it will help anyone, these people will come to LinkedIn and find another job via this great professional network.
 
-I want to say special thanks to my lovely wife, her great patience, support and also the laptop which I used for this project as a second station.
+I want to say special thanks to my lovely wife, her great patience, support and also her laptop which I used for this project as a second station.
 
 And I also want to thank my colleagues, professors, assistants and students of the University of Calgary which is providing the great Master of Data Science and Analytics program.
 
@@ -2595,6 +2595,6 @@ plt.show()
 1. [Selenium](https://www.selenium.dev/) - Open Source toolkit for automation of web browser.
 2. [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) - Python package for parsing HTML and XML documents.
 3. [LinkedIn Job Board](https://www.linkedin.com/jobs/) - The initial source of this research.
-4. ![plotly](https://plotly.com/python/) - One of the best visualization libraries for Python.
+4. [plotly](https://plotly.com/python/) - One of the best visualization libraries for Python.
 5. [OpenAI API Toolkit](https://openai.com/blog/openai-api) - Strong instrument to use LLM GPT-3.5 in your application.
 6. [DeepLearning.ai](https://deeplearning.ai) - One of the best resourses to learn about Machine Learning and GPT Prompt Engineering
