@@ -765,7 +765,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot1.html")
 ```
-[plot1](plot1.png)
+!![plot1](plot1.png)
 
 The first key insight is the Data Engineer, Data Scientist and Data Analyst jobs take more than 70% of all Data Science job market. These jobs are mostly in demand now and the most demanded job is Data Engineer with 31% of the job market. So, if you are a Data Engineer or planning to become a Data Engineer, this is the hottest job now in our field. Data Analyst and Data Scientist are still on top of Data Science jobs. And the insightful thing that Software Engineers are hired by companies mostly for developing AI tools together with Machine Learning Engineers. Product Managers is also a popular job based on job posting data, such as Data Entry position. Actually, Data Entry job is hardly to classify by Data Science role, but since this work is data related and quite popular, I decided to include it in this study. And BI has not a huge proportion in our dataset but maybe the reason is in the title of jobs and mostly BI tasks are included in the Data Analyst positions.
 
@@ -899,7 +899,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot2.html")
 ```
-[plot2](plot2.png)
+!![plot2](plot2.png)
 More than half (52,6%) of the positions are open to middle and senior level specialists. However, in 2023, Canada also has a significant number of positions for entry-level data specialists (22.7%) and associates (3.82%), as well as internships (2.84), most of which are co-op formats that are unique to Canada and are excellent opportunities for starting a career for young specialists. Data Science Directors are most demanded from leading positions with 4.15%.
 
 And sometimes it's interesting to look in what industries all these specialists work.
@@ -1077,7 +1077,7 @@ fig.show()
 fig.write_html("plot3.html")
 
 ```
-[plot3](plot3.png)
+!![plot3](plot3.png)
 
 And the answer is that 4 main industries takes more than 50% of Data Science jobs market: Software Development (17.1%), IT Service and Consulting (17.1%), Finance Service (11.5%) and Staffing and Recruiting (7.93%). The last industry is highly probable represented by intermediary companies that hire data scientists for their clients. The one additional insight that HealthCare industry has almost 5.5% of Data Science job market which is very high and characterizes that in Canada, the field of HealthCare and medicine is at a high-tech level.
 
@@ -1371,7 +1371,7 @@ fig.add_trace(
 fig.show()
 fig.write_html("plot4.html")
 ```
-[plot4](plot4.png)
+![plot4](plot4.png)
 The answer to guiding question we can find in Geographical analysts and find that the most Data Science Jobs city in Canada is Toronto, the second one - Montreal, the third one is Vancouver and Calgary is placed in fourth place. So, as a Calgary resident I can say that Calgary is the first Data Science city in Alberta and one of the top Data Science cities in Canada.
 
 Analysing the structure of these jobs using the following bar chart we can find some more insights, such as the second popular location for Data Science jobs is Remote. 
@@ -1395,7 +1395,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot5.html")
 ```
-[plot5](plot5.png)
+![plot5](plot5.png)
 Hiring remote specialists in Canada is highly popular, especially for the U.S. companies. So, if you are looking for a remote job from home, Data Science is the field where you can find a lot of opportunities for this. As Calgarian Data Scientist I'm very interesting about Calgary and I found then unlike other locations Calgarian companies more likely hire Data Scientists but not other related specialists such as Data Engineers or Data Analysts. This fact gives us some insights about the structure of the Calgarian job market which is filled with a lot of young and fast growing startups.
 
 The structure of the job market would be incomplete without understanding the number of companies hiring Data Science specialists and without understanding how many job postings are posted in each part of the job market structure. 
@@ -1440,7 +1440,7 @@ fig.show()
 # Saving the figure as an HTML file
 fig.write_html("plot6.html")
 ```
-[plot6](plot6.png)
+![plot6](plot6.png)
 So, analysing these two questions I found that most of the jobs came from middle-large and extra-large companies which may be as long as large Canadian companies as international companies hiring through Canada. And the other part is the local part of companies of different sizes and mostly hired locally in cities they are located.
 
 
@@ -1470,7 +1470,7 @@ fig.update_layout(barmode='stack', yaxis_title = 'Number of jobs', xaxis={'categ
 fig.show()
 fig.write_html("plot6_.html")
 ```
-[plot6_](plot6_.png)
+![plot6_](plot6_.png)
 
 ```python
 df5 = df4[['Company Name', 'Company Size']]
@@ -1500,7 +1500,7 @@ fig.update_layout(barmode='stack', yaxis_title = 'Number of companies', xaxis={'
 fig.show()
 fig.write_html("plot6_1.html")
 ```
-[plot6_1](plot6_1.png)
+![plot6_1](plot6_1.png)
 
 ## 3. Which skills set is important for each job? How to make your LinkedIn profile matching with job postings? What should you know from related fields?
 
@@ -1860,7 +1860,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot7.html")
 ```
-[plot7](plot7.png)
+![plot7](plot7.png)
 For Data Analysts the demanded skill set starts from Data Analytics, Communications, Analytical Skills, Data Analysis, Analytics, Visualization and Problem Solving. The same as the previous, the entire skill set is placed on the chart below.
 
 
@@ -1873,7 +1873,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot8.html")
 ```
-[plot8](plot8.png)
+![plot8](plot8.png)
 Machine Learning Engineers to be matching with the most MLE job postings should know Computer Science, Data Science, Artificial Intelligence, Machine Learning, Pattern Recognition, Natural Language Processing, Software Engineering, Programming, Python, Data Mining, Deep Learning etc.
 
 
@@ -1886,7 +1886,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot9.html")
 ```
-[plot9](plot9.png)
+![plot9](plot9.png)
 
 The top 5 Data Engineer Skills: ETL (Extract, Transform and Load), Data Engineering, Databases, Communication and Data Modeling. Following skills are placed on the bar chart below.
 
@@ -1900,7 +1900,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot10.html")
 ```
-[plot10](plot10.png)
+![plot10](plot10.png)
 Software Engineers looking for a career in Data Science field should know Software Engineering (obviously), Communication, Computer Science, Databases, Back-End Web Development, Programming, SQL and other skills below.
 
 
@@ -1913,7 +1913,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot11.html")
 ```
-[plot11](plot11.png)
+![plot11](plot11.png)
 Business Intelligence specialists should be experienced in Communication, BI, Data Analytics, Databases, Analytical Skills, creating Dashboards, operating with Data Warehouses, ETL, Problem Solving and Data Modeling and other skills below.
 
 
@@ -1926,7 +1926,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot12.html")
 ```
-[plot12](plot12.png)
+![plot12](plot12.png)
 Product Managers also should be able to Communicate efficiently, to be familiar with Data Analytics and Data Analysis, Problem Solving, Query Writing, Project Management (obviously), MS Power Query and some more skills below.
 
 
@@ -1939,7 +1939,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot13.html")
 ```
-[plot13](plot13.png)
+![plot13](plot13.png)
 Data Entry specialists should be qualified in English, Online Search, Global Business, Data Science, Data Mining and other skill sets below.
 
 
@@ -1952,7 +1952,7 @@ fig.update_layout(yaxis={'categoryorder':'total ascending'}, xaxis_title = 'Numb
 fig.show()
 fig.write_html("plot14.html")
 ```
-[plot14](plot14.png)
+![plot14](plot14.png)
 As a careful reader could find, many skills are placed in different Data Science jobs and may sign that any Data specialist should be familiar with skills from related job. This insight leads us to construct the model of competencies of each job position. To construct the model I calculated the number of includings of each skill in each job. Then, the number of intersections with each other category of job gives us the value of each ray. But to be more accurate, each value on each ray is divided to the number of jobs in each class. This gives us the relative value of the intersections of each position with each other and allows you to build an approximate wheel of competencies for each profession.
 
 
@@ -2268,8 +2268,8 @@ fig = px.line_polar(df_line_polar[:32], r="value", theta="keys", color = 'Job Cl
 fig.show()
 fig.write_html("plot15.html")
 ```
-[plot15](plot15.png)
-[plot16](plot16.png)
+![plot15](plot15.png)
+![plot16](plot16.png)
 As we can find on the chart below Data Scientists should also have skills of Data Analyst, Data Engineer and Machine Learning Engineer. As a Data Scientist other specialists on the charts below should be familiar with skills from different jobs. To take more information please play with charts below and fill free to give the feedback about this model.
 
 # 4. What are the most popular programming languages and tools in Data Science based on Job Postings?
@@ -2451,7 +2451,7 @@ fig.show()
 #df_langs
 fig.write_html("plot17.html")
 ```
-[plot17](plot17.png)
+![plot17](plot17.png)
 And the answers for these questions are placed on three following tree plots. The top 3 most popular languages for Data Science jobs are SQL, Python and R. So, these languages are the kinds that MUST HAVE in the Data Science field and should be learned by anyone who wants to be competitive in the job market in this field. Java, SAS, Scala, C++ and other languages are also important for Data Science roles.
 
 
@@ -2496,7 +2496,7 @@ fig = px.treemap(df_tools, path=['key'], values='value',
 fig.show()
 fig.write_html("plot18.html")
 ```
-[plot18](plot18.png)
+![plot18](plot18.png)
 When it comes to tools, Microsoft Excel is the MUST HAVE tool for anyone who wants to work in the Data field, as also Power BI, Tableau, AWS, Azure and other important tools related with Data Engineering, Machine Learning and Version control process
 
 
@@ -2538,7 +2538,7 @@ fig = px.treemap(df_libs, path=['key'], values='value',
 fig.show()
 fig.write_html("plot19.html")
 ```
-[plot19](plot19.png)
+![plot19](plot19.png)
 According to libraries from the tree chart below we can find that such Machine Learning libraries as TensorFlow, PyTorch, data manipulation library Pandas, NumPy, sk-learn and others are highly important for our field. So, if you are not familiar with these libraries and are going to enter the market, start learning today, because hiring companies expect it from us in 2023.
 
 ## Conclusion
@@ -2593,6 +2593,6 @@ plt.show()
 1. [Selenium](https://www.selenium.dev/) - Open Source toolkit for automation of web browser.
 2. [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) - Python package for parsing HTML and XML documents.
 3. [LinkedIn Job Board](https://www.linkedin.com/jobs/) - The initial source of this research.
-4. [Plotly](https://plotly.com/python/) - One of the best visualization libraries for Python.
+4. ![plotly](https://plotly.com/python/) - One of the best visualization libraries for Python.
 5. [OpenAI API Toolkit](https://openai.com/blog/openai-api) - Strong instrument to use LLM GPT-3.5 in your application.
 6. [DeepLearning.ai](https://deeplearning.ai) - One of the best resourses to learn about Machine Learning and GPT Prompt Engineering
